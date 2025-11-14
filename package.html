@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novis Gym Packages</title>
+  <link rel="stylesheet" href="package.css"> 
+</head>
+<body class="package-page-body">
+  <div class="package-header">NOVIS GYM PACKAGES</div>
+  
+  <div class="packages-container">
+    
+    <div class="package-card" data-package-value="Basic" data-package-display="PACKAGE: BASIC 1,999/month">
+      <h2>BASIC PLAN</h2>
+      <div class="price">1,999/month</div>
+      <ul>
+        <li>24h Unlimited Access</li>
+        <li>Personal Trainer</li>
+      </ul>
+      <button class="select-button">SELECT</button>
+    </div>
+    
+    <div class="package-card" data-package-value="Premium" data-package-display="PACKAGE: PREMIUM 2,399/month">
+      <h2>PREMIUM</h2>
+      <div class="price">2,399/month</div>
+      <ul>
+        <li>24h Unlimited Access</li>
+        <li>Personal Trainer</li>
+        <li>Locker + Bathroom</li>
+      </ul>
+      <button class="select-button">SELECT</button>
+    </div>
+
+    <div class="package-card" data-package-value="Gold" data-package-display="PACKAGE: GOLD 2,999/month">
+      <h2>GOLD</h2>
+      <div class="price">2,999/month</div>
+      <ul>
+        <li>24h Unlimited Access</li>
+        <li>Personal Trainer</li>
+        <li>Locker + Bathroom</li>
+        <li>Free Supplements</li>
+      </ul>
+      <button class="select-button">SELECT</button>
+    </div>
+    
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'novisGymSelections';
+
+    document.querySelectorAll('.package-card').forEach(card => {
+      card.querySelector('.select-button').addEventListener('click', function() {
+        const packageValue = card.getAttribute('data-package-value');
+        const packageDisplay = card.getAttribute('data-package-display');
+        
+        
+        const storedData = localStorage.getItem(STORAGE_KEY);
+        const selections = storedData ? JSON.parse(storedData) : {};
+        
+        
+        selections.packageValue = packageValue;
+        selections.packageDisplay = packageDisplay;
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(selections));
+        
+        
+        window.location.href = "selection.html"; 
+      });
+    });
+  </script>
+</body>
+</html>

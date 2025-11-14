@@ -1,0 +1,79 @@
+body {
+  margin: 0;
+  font-family: 'Poppins', sans-serif;
+  background: url('./bg.png.png') no-repeat center center/cover;
+  color: white;
+  height: 100vh;
+}
+
+.ad-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 60px;
+  background: rgba(0, 0, 0, 0.6);
+  height: 100%;
+}
+
+.text-section {
+  max-width: 800px;
+}
+
+h1 {
+  font-size: 80px;
+  font-weight: 800;
+  line-height: 1.1;
+}
+
+.highlight {
+  color: white;
+  
+}
+
+.sub-highlight {
+  color: #ff2d2d;
+  font-style: italic;
+  font-weight: 700;
+}
+
+.features {
+  list-style: none;
+  padding: 20px 0px;
+  margin-top: 10px;
+  font-size: 40px;
+  line-height: 1.8;
+}
+
+.book-btn {
+  background-color: #ff2d2d;
+  color: white;
+  border: none;
+  padding: 15px 40px;
+  font-size: 18px;
+  font-weight: bold;
+  margin-top: 30px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: 0.3s;
+}
+
+.book-btn:hover {
+  background-color: #e02424;
+}
+
+.contact-info {
+  margin-top: 30px;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.logo {
+  position: absolute;
+  top: 40px;
+  right: 0px;
+  background: #ff2d2d;
+  padding: 15px 120px;
+  font-weight: bold;
+  font-size: 18px;
+  border-radius: 3px;
+}

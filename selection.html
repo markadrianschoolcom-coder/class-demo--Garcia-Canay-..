@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Novis Gym Membership</title>
+  <link rel="stylesheet" href="selection.css"> 
+</head>
+<body class="selection-page-body">
+  <div class="selection-page-container">
+    <div class="header-logo">
+      <img src="./logo.png.png" alt="Gym Logo" class="logo">
+      <h1 class="title">NOVIS GYM FOR BETTER <span class="highlight">FITNESS</span></h1>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label-style">PACKAGE</label>
+      <a href="package.html" class="selection-box" id="packageSelectionBox">
+        <span id="displayPackage">Choose</span>
+      </a>
+    </div>
+
+    <div class="form-group">
+      <label class="form-label-style">TRAINER</label>
+      <a href="trainer.html" class="selection-box" id="trainerSelectionBox">
+        <span id="displayTrainer">Choose</span>
+      </a>
+    </div>
+    
+    <div class="form-group">
+      <label class="form-label-style">STARTING DATE:</label>
+      <input type="date" id="startDate" class="date-input" placeholder="Select Date">
+    </div>
+
+    <button id="proceedToPayment" class="proceed-btn">PROCEED TO PAYMENT</button>
+  </div>
+  <script>
+    const STORAGE_KEY_SELECTIONS = 'novisGymSelections';
+    const STORAGE_KEY_ALL_BOOKINGS = 'novisGymAllBookings';
+    const STORAGE_KEY_CURRENT_EDIT = 'novisGymEditingBookingId'; 
+
+    const startDateInput = document.getElementById('startDate');
+    const displayPackage = document.getElementById('displayPackage');
+    const displayTrainer = document.getElementById('displayTrainer');
+    const proceedButton = document.getElementById('proceedToPayment');
+
+    function loadSelections() {
+        const currentSelections = JSON.parse(localStorage.getItem(STORAGE_KEY_SELECTIONS)) || {};
+
+        if (currentSelections.packageDisplay && displayPackage) {
+            const packageDisplay = currentSelections.packageDisplay.includes(':') 
+                ? currentSelections.packageDisplay.split(':')[1].trim().split(' ')[0] 
+                : currentSelections.packageDisplay;
+
+            displayPackage.textContent = packageDisplay.trim() || 'Choose';
+        }
+
+        if (currentSelections.trainerDisplay && displayTrainer) {
+            displayTrainer.textContent = currentSelections.trainerDisplay;
+        }
+
+        if (currentSelections.startDate && startDateInput) {
+            startDateInput.value = currentSelections.startDate;
+        }
+    }
+    
+    function saveStartDate() {
+        const dateValue = startDateInput.value;
+        let selections = JSON.parse(localStorage.getItem(STORAGE_KEY_SELECTIONS)) || {};
+        
+        if (dateValue) {
+            selections.startDate = dateValue;
+            localStorage.setItem(STORAGE_KEY_SELECTIONS, JSON.stringify(selections));
+        }
+    }
+
+    function handleProceed() {
+        const currentSelections = JSON.parse(localStorage.getItem(STORAGE_KEY_SELECTIONS)) || {};
+        
+        if (!currentSelections.packageValue) {
+            alert('Please select a Package first.');
+            return;
+        }
+        if (!currentSelections.trainerValue) {
+            alert('Please select a Trainer first.');
+            return;
+        }
+        if (!currentSelections.startDate) {
+            alert('Please select a Starting Date.');
+            return;
+        }
+
+        window.location.href = "payment.html";
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        let currentSelections = {};
+        const editingBookingId = localStorage.getItem(STORAGE_KEY_CURRENT_EDIT);
+
+        if (editingBookingId) {
+            const allBookings = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_BOOKINGS)) || [];
+            const bookingToEdit = allBookings.find(booking => booking.id === editingBookingId);
+
+            if (bookingToEdit) {
+                currentSelections = {
+                    id: bookingToEdit.id,
+                    packageValue: bookingToEdit.packageValue,
+                    packageDisplay: bookingToEdit.packageDisplay,
+                    trainerValue: bookingToEdit.trainerValue,
+                    trainerDisplay: bookingToEdit.trainerDisplay,
+                    startDate: bookingToEdit.startDate
+                };
+
+                localStorage.setItem(STORAGE_KEY_SELECTIONS, JSON.stringify(currentSelections));
+            } else {
+                localStorage.removeItem(STORAGE_KEY_CURRENT_EDIT);
+            }
+        }
+
+        loadSelections(); 
+        startDateInput.addEventListener('change', saveStartDate);
+        proceedButton.addEventListener('click', handleProceed);
+
+        const today = new Date();
+        const yyyy = today.getFullYear();
+        let mm = today.getMonth() + 1;
+        let dd = today.getDate();
+
+        if (dd < 10) dd = '0' + dd;
+        if (mm < 10) mm = '0' + mm;
+
+        const minDate = yyyy + '-' + mm + '-' + dd;
+        startDateInput.setAttribute('min', minDate);
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment Method | Novis Gym</title>
+    <link rel="stylesheet" href="payment.css"> 
+    
+</head>
+<body>
+    <div class="checkout-wrapper">
+        <h1 class="main-header">Complete Your Booking</h1>
+        <div class="checkout-container">
+            
+            <div class="summary-section">
+                <h2 class="section-title">✨ Order Summary</h2>
+                
+                <div class="summary-details">
+                    <p class="client-name">Client: <span id="summaryClientName">Loading...</span></p>
+
+                    <div class="detail-group">
+                        <div class="detail-row">
+                            <span>Package:</span>
+                            <span class="detail-value" id="summaryPackage">Loading...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Trainer:</span>
+                            <span class="detail-value" id="summaryTrainer">Loading...</span>
+                        </div>
+                        <div class="detail-row">
+                            <span>Starting Date:</span>
+                            <span class="detail-value" id="summaryDate">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="summary-total">
+                    <p>TOTAL DUE:</p>
+                    <p class="total-amount" id="summaryTotal">P0.00 / Month</p>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h2 class="section-title">💳 Payment Method</h2>
+                
+                <div class="method-option active" data-method="gcash">
+                    <div class="method-header">
+                        <img src="gcash.jpg" alt="GCash" class="method-logo">
+                        <span>GCash</span>
+                    </div>
+                    <div class="method-content">
+                        <p>Scan the QR code below:</p>
+                        <img src="gcash.jpg" alt="GCash QR Code" style="width: 150px; margin: 10px 0;">
+                        <input type="tel" class="payment-input" id="gcashReference" placeholder="Enter Reference Number" required maxlength="11" minlength="11">
+                    </div>
+                </div>
+
+                <div class="method-option" data-method="card">
+                    <div class="method-header">
+                        <img src="mlogo.jpg" alt="Credit Card" class="method-logo">
+                        <span>Credit/Debit Card</span>
+                    </div>
+                    <div class="method-content hidden">
+                        <input type="text" class="payment-input" id="cardNumber" placeholder="Card Number" required maxlength="16" minlength="16">
+                        <input type="text" class="payment-input" placeholder="Card Holder Name" required>
+                        <div class="card-row">
+                            <input type="text" class="payment-input short-input" placeholder="MM/YY" required maxlength="5">
+                            <input type="text" class="payment-input short-input" placeholder="CVC" required maxlength="4">
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="method-option" data-method="cash">
+                    <div class="method-header">
+                        <img src="peso.png" alt="Cash" class="method-logo">
+                        <span>Cash on Site</span>
+                    </div>
+                    <div class="method-content hidden">
+                        <p class="cash-note">Payment will be settled upon arrival at the gym on your starting date. A ₱100 fee applies for no-shows.</p>
+                    </div>
+                </div>
+
+                <button id="completeBookingBtn" class="complete-btn">COMPLETE BOOKING</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const STORAGE_KEY_SELECTIONS = 'novisGymSelections';
+        const STORAGE_KEY_ALL_BOOKINGS = 'novisGymAllBookings';
+        const STORAGE_KEY_USERS = 'novisGymUsers';
+        const STORAGE_KEY_CURRENT_EDIT = 'novisGymEditingBookingId'; 
+        const STORAGE_KEY_LAST_BOOKING = 'novisLastBookingId';
+
+        function getPackagePrice(packageValue) {
+            switch (packageValue) {
+                case 'Basic':
+                    return 1999;
+                case 'Premium':
+                    return 2399;
+                case 'Gold':
+                    return 2999;
+                default:
+                    return 0;
+            }
+        }
+
+        function loadSummary() {
+            const selections = JSON.parse(localStorage.getItem(STORAGE_KEY_SELECTIONS)) || {};
+            const allUsers = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS)) || [];
+            const lastUser = allUsers[allUsers.length - 1] || {};
+
+            const summaryClientName = document.getElementById('summaryClientName');
+            const summaryPackage = document.getElementById('summaryPackage');
+            const summaryTrainer = document.getElementById('summaryTrainer');
+            const summaryDate = document.getElementById('summaryDate');
+            const summaryTotal = document.getElementById('summaryTotal');
+
+            const clientName = lastUser.firstName ? `${lastUser.firstName} ${lastUser.lastName}` : 'Guest';
+            summaryClientName.textContent = clientName;
+            
+            summaryPackage.textContent = selections.packageDisplay ? selections.packageDisplay.split(':')[1].trim() : 'N/A';
+            summaryTrainer.textContent = selections.trainerDisplay || 'N/A';
+            summaryDate.textContent = selections.startDate || 'N/A';
+
+            const price = getPackagePrice(selections.packageValue);
+            summaryTotal.textContent = `P${price.toLocaleString('en-US')}.00 / Month`;
+        }
+
+        function handlePaymentAndSave() {
+            const selections = JSON.parse(localStorage.getItem(STORAGE_KEY_SELECTIONS)) || {};
+            let allBookings = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_BOOKINGS)) || [];
+            const allUsers = JSON.parse(localStorage.getItem(STORAGE_KEY_USERS)) || [];
+            const lastUser = allUsers[allUsers.length - 1] || {};
+
+            if (!selections.packageValue || !selections.trainerValue || !selections.startDate || !lastUser.firstName) {
+                alert("Error: Missing client or selection data. Please go back to the selection page.");
+                window.location.href = "selection.html";
+                return;
+            }
+
+            // --- Capture Payment Details ---
+            const activeMethodContainer = document.querySelector('.method-option.active');
+            const paymentMethod = activeMethodContainer.getAttribute('data-method');
+            let paymentReference = 'N/A';
+
+            if (paymentMethod === 'gcash') {
+                const gcashInput = document.getElementById('gcashReference');
+                if (!gcashInput.value || gcashInput.value.length !== 11) {
+                    alert("Please enter a valid 11-digit GCash Reference Number.");
+                    return;
+                }
+                paymentReference = gcashInput.value;
+            } else if (paymentMethod === 'card') {
+                const cardNumberInput = document.getElementById('cardNumber');
+                if (!cardNumberInput.value || cardNumberInput.value.length !== 16) {
+                    alert("Please enter a valid 16-digit Card Number.");
+                    return;
+                }
+                // Save only the last 4 digits for display security
+                paymentReference = '**** **** **** ' + cardNumberInput.value.slice(-4);
+            } else if (paymentMethod === 'cash') {
+                paymentReference = 'Settled on arrival';
+            }
+            // -------------------------------
+            
+            const editingBookingId = localStorage.getItem(STORAGE_KEY_CURRENT_EDIT);
+            const bookingPrice = getPackagePrice(selections.packageValue);
+            let finalBookingId = null;
+
+            if (editingBookingId) {
+                const bookingIndex = allBookings.findIndex(b => b.id === editingBookingId);
+
+                if (bookingIndex !== -1) {
+                    allBookings[bookingIndex] = {
+                        ...allBookings[bookingIndex],
+                        packageValue: selections.packageValue,
+                        packageDisplay: selections.packageDisplay,
+                        trainerValue: selections.trainerValue,
+                        trainerDisplay: selections.trainerDisplay,
+                        startDate: selections.startDate,
+                        price: bookingPrice,
+                        paymentMethod: paymentMethod, // SAVED
+                        paymentReference: paymentReference, // SAVED
+                        dateConfirmed: new Date().toISOString().split('T')[0]
+                    };
+
+                    finalBookingId = editingBookingId;
+                    localStorage.removeItem(STORAGE_KEY_CURRENT_EDIT);
+                }
+            } else {
+                const newBookingId = `NOV${Date.now()}`;
+                
+                const newBooking = {
+                    id: newBookingId,
+                    clientName: `${lastUser.firstName} ${lastUser.lastName}`,
+                    clientEmail: lastUser.email,
+                    clientContact: lastUser.contact,
+                    packageValue: selections.packageValue,
+                    packageDisplay: selections.packageDisplay,
+                    trainerValue: selections.trainerValue,
+                    trainerDisplay: selections.trainerDisplay,
+                    startDate: selections.startDate,
+                    price: bookingPrice,
+                    paymentMethod: paymentMethod, // SAVED
+                    paymentReference: paymentReference, // SAVED
+                    dateConfirmed: new Date().toISOString().split('T')[0]
+                };
+                
+                allBookings.push(newBooking);
+                finalBookingId = newBookingId;
+            }
+
+            localStorage.setItem(STORAGE_KEY_ALL_BOOKINGS, JSON.stringify(allBookings));
+
+            if (finalBookingId) {
+                localStorage.setItem(STORAGE_KEY_LAST_BOOKING, finalBookingId);
+            }
+
+            localStorage.removeItem(STORAGE_KEY_SELECTIONS); 
+            
+            window.location.href = "bookagain.html";
+        }
+
+        function setActivePayment(selectedMethod) {
+            const methodOptions = document.querySelectorAll('.method-option');
+            methodOptions.forEach(option => {
+                const content = option.querySelector('.method-content');
+                option.classList.remove('active');
+                content.classList.add('hidden');
+            });
+
+            selectedMethod.classList.add('active');
+            selectedMethod.querySelector('.method-content').classList.remove('hidden');
+        }
+
+        function initPaymentPage() {
+            loadSummary();
+
+            const methodOptions = document.querySelectorAll('.method-option');
+            methodOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    setActivePayment(this);
+                });
+            });
+
+            const defaultMethod = document.querySelector('.method-option[data-method="gcash"]');
+            if (defaultMethod) {
+                setActivePayment(defaultMethod); 
+            }
+
+            const completeBookingButton = document.getElementById('completeBookingBtn');
+            if (completeBookingButton) {
+                completeBookingButton.addEventListener('click', handlePaymentAndSave);
+            }
+        }
+        
+        document.addEventListener('DOMContentLoaded', initPaymentPage);
+    </script>
+    
+</body>
+</html>

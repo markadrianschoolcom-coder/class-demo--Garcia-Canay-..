@@ -1,0 +1,120 @@
+body.admin-page-body {
+    font-family: Arial, sans-serif;
+    background-color: #1a1a1a; /* Very dark background */
+    /* *** OPTIONAL: INSERT BACKGROUND IMAGE HERE *** */
+    background: url('signbg.png.png') no-repeat center center/cover;
+    color: #f0f0f0;
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+}
+
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    background-color: #2c2c2c; /* Container background */
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+}
+
+.main-title {
+    color: #ff2d2d; /* Red Accent, matching header */
+    text-align: center;
+    margin-bottom: 20px;
+    font-size: 2.5em;
+    border-bottom: 2px solid #555;
+    padding-bottom: 10px;
+}
+
+.total-bookings-count {
+    text-align: right;
+    font-size: 1.1em;
+    margin-bottom: 15px;
+    color: #f7a83d; /* Orange Accent */
+    font-weight: bold;
+}
+
+.table-wrapper {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+#bookingsTable {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+}
+
+#bookingsTable th, #bookingsTable td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+#bookingsTable th {
+    background-color: #3a3a3a;
+    color: #ff2d2d; /* Red header text */
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+#bookingsTable tr:hover {
+    background-color: #333;
+}
+
+.no-data {
+    text-align: center !important;
+    font-style: italic;
+    color: #999;
+}
+
+/* Actions Buttons Styling */
+.actions-cell button {
+    margin-right: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s;
+    font-size: 0.85em;
+}
+
+.edit-btn {
+    background-color: #0088ff; 
+    color: white;
+}
+
+.edit-btn:hover {
+    background-color: #0066cc;
+}
+
+.delete-btn {
+    background-color: #ff2d2d; 
+    color: white;
+}
+
+.delete-btn:hover {
+    background-color: #e02424;
+}
+
+.back-btn {
+    display: block;
+    width: 250px;
+    margin: 20px auto 0;
+    padding: 12px;
+    background-color: #f7a83d; 
+    color: #1a1a1a;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: bold;
+    transition: background-color 0.3s;
+}
+
+.back-btn:hover {
+    background-color: #e09930;
+}

@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Booking Confirmed | Novis Gym</title>
+    <link rel="stylesheet" href="bookagain.css">
+    
+</head>
+<body>
+    <div class="confirmation-container">
+        <div class="header-branding">
+            <img src="logo.png.png" alt="Novis Gym Logo" class="logo">
+            <h1 class="title">NOVIS GYM FOR BETTER <span class="highlight">FITNESS</span></h1>
+        </div>
+
+        <div class="content-area booking-summary-area">
+            <h2 class="main-message">BOOKING CONFIRMED</h2>
+            <div class="underline"></div>
+            
+            <div class="summary-card">
+                <p class="summary-client">Thank you, <span id="clientName">Valued Client</span>!</p>
+
+                <div class="summary-details-wrapper">
+                    <div class="summary-detail-row">
+                        <span class="detail-label">PACKAGE:</span>
+                        <span class="detail-value" id="summaryPackage">Loading...</span>
+                    </div>
+                    
+                    <div class="summary-detail-row">
+                        <span class="detail-label">TRAINER:</span>
+                        <span class="detail-value" id="summaryTrainer">Loading...</span>
+                    </div>
+
+                    <div class="summary-detail-row">
+                        <span class="detail-label">STARTING DATE:</span>
+                        <span class="detail-value" id="summaryDate">Loading...</span>
+                    </div>
+
+                    <div class="summary-detail-row">
+                        <span class="detail-label">PAYMENT METHOD:</span>
+                        <span class="detail-value" id="summaryPaymentMethod">Loading...</span>
+                    </div>
+                    <div class="summary-detail-row">
+                        <span class="detail-label" id="refLabel">REFERENCE NO:</span>
+                        <span class="detail-value" id="summaryReference">Loading...</span>
+                    </div>
+                    </div>
+
+                <div class="summary-price-row">
+                    <span class="detail-label total-label">MONTHLY COST:</span>
+                    <span class="detail-value total-value" id="summaryPrice">P0.00 / Month</span>
+                </div>
+            </div>
+
+            <div class="action-buttons full-control-set">
+                <button class="action-btn edit-btn" id="editBookingBtn">EDIT</button>
+                <button class="action-btn cancel-btn-action" id="cancelBookingBtn">CANCEL BOOK</button>
+
+                <button class="action-btn book-another-btn" onclick="window.location.href='gym.html'">BOOK ANOTHER</button>
+                <button class="action-btn view-listings-btn" onclick="window.location.href='admin.html'">VIEW ALL BOOKINGS</button>
+            </div>
+            
+        </div>
+    </div>
+
+    <script>
+    const STORAGE_KEY_ALL_BOOKINGS = 'novisGymAllBookings';
+    const STORAGE_KEY_SELECTIONS = 'novisGymSelections';
+    const STORAGE_KEY_CURRENT_EDIT = 'novisGymEditingBookingId';
+    const STORAGE_KEY_LAST_BOOKING = 'novisLastBookingId';
+    
+    let lastBookingData = null; 
+    let currentBookingId = null;
+
+    function getPackagePrice(packageValue) {
+        if (packageValue === 'Basic') return 1999;
+        if (packageValue === 'Premium') return 2399;
+        if (packageValue === 'Gold') return 2999;
+        return 0;
+    }
+
+    function cancelBooking(bookingId) {
+        if (confirm("Are you sure you want to cancel this booking? This action cannot be undone.")) {
+            let bookings = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_BOOKINGS)) || [];
+            
+            const initialLength = bookings.length;
+            bookings = bookings.filter(booking => booking.id !== bookingId);
+            
+            if (bookings.length < initialLength) {
+                localStorage.setItem(STORAGE_KEY_ALL_BOOKINGS, JSON.stringify(bookings));
+                
+                localStorage.removeItem(STORAGE_KEY_LAST_BOOKING); 
+                
+                alert("Booking successfully cancelled and deleted.");
+                window.location.href = "gym.html";
+            } else {
+                alert("Error: Booking could not be found.");
+            }
+        }
+    }
+
+    function editBooking(bookingId, bookingData) {
+        localStorage.setItem(STORAGE_KEY_CURRENT_EDIT, bookingId); 
+        
+        const tempSelections = {
+            id: bookingData.id,
+            packageValue: bookingData.packageValue,
+            packageDisplay: bookingData.packageDisplay,
+            trainerValue: bookingData.trainerValue,
+            trainerDisplay: bookingData.trainerDisplay,
+            startDate: bookingData.startDate
+        };
+        localStorage.setItem(STORAGE_KEY_SELECTIONS, JSON.stringify(tempSelections)); 
+        
+        window.location.href = "selection.html"; 
+    }
+
+    function loadBookingSummary() {
+        const allBookings = JSON.parse(localStorage.getItem(STORAGE_KEY_ALL_BOOKINGS)) || [];
+        const lastBookingId = localStorage.getItem(STORAGE_KEY_LAST_BOOKING);
+        
+        const bookingToDisplay = allBookings.find(b => b.id === lastBookingId);
+
+        if (bookingToDisplay) {
+            lastBookingData = bookingToDisplay;
+            currentBookingId = bookingToDisplay.id;
+
+            document.getElementById('clientName').textContent = bookingToDisplay.clientName;
+            document.getElementById('summaryPackage').textContent = bookingToDisplay.packageDisplay.split(':')[1].trim().split(' ')[0];
+            document.getElementById('summaryTrainer').textContent = bookingToDisplay.trainerDisplay ? bookingToDisplay.trainerDisplay.split(' (')[0] : 'N/A'; 
+            document.getElementById('summaryDate').textContent = bookingToDisplay.startDate;
+
+            // NEW: Display Payment Details
+            const paymentMethod = bookingToDisplay.paymentMethod || 'N/A';
+            const paymentReference = bookingToDisplay.paymentReference || 'N/A';
+
+            document.getElementById('summaryPaymentMethod').textContent = paymentMethod.toUpperCase();
+            document.getElementById('summaryReference').textContent = paymentReference;
+            
+            const refLabel = document.getElementById('refLabel');
+            if (paymentMethod === 'gcash') {
+                refLabel.textContent = 'REFERENCE NO:';
+            } else if (paymentMethod === 'card') {
+                refLabel.textContent = 'CARD NO (Last 4):';
+            } else if (paymentMethod === 'cash') {
+                refLabel.textContent = 'STATUS:';
+            } else {
+                refLabel.textContent = 'REFERENCE:';
+            }
+
+            const price = getPackagePrice(bookingToDisplay.packageValue);
+            document.getElementById('summaryPrice').textContent = `P${price.toLocaleString('en-US')}.00 / Month`;
+        } else {
+            document.getElementById('clientName').textContent = 'Error';
+            document.querySelector('.summary-card').innerHTML = `<p class="summary-client" style="text-align: center;">No recent booking confirmation found. Please book a package first.</p>`;
+            document.querySelector('.full-control-set').style.display = 'none';
+        }
+        
+        if (currentBookingId) {
+            document.getElementById('editBookingBtn').addEventListener('click', () => editBooking(currentBookingId, lastBookingData));
+            document.getElementById('cancelBookingBtn').addEventListener('click', () => cancelBooking(currentBookingId));
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', loadBookingSummary);
+</script>
+</body>
+</html>

@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Professional Trainers</title>
+  <link rel="stylesheet" href="trainer.css"> 
+</head>
+<body class="trainer-page-body">
+  <div class="trainer-header">PROFESSIONAL TRAINERS</div>
+  
+  <div class="trainers-container">
+    
+    <input type="text" id="trainerSearch" placeholder="Search by trainer name or expertise..." class="search-input">
+    
+    <div class="trainer-card" data-trainer-value="DavidLaid" data-trainer-display="David Laid (4.5/5)">
+      <div class="trainer-info-wrapper">
+        <img src="david.jpg" alt="David Laid" class="trainer-photo">
+        <div class="trainer-details">
+          <h3>David Laid</h3>
+          <p class="description">certified strength and conditioning coach with over 5 years of experience helping clients build muscle and improve performance. He focuses on functional strength, proper form, and progressive overload to ensure safe and effective workouts.</p>
+          <div class="rating">
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star half">★</span>
+            <span class="star empty">★</span>
+          </div>
+        </div>
+        <button class="select-trainer-button">SELECT</button>
+      </div>
+    </div>
+    
+    <div class="trainer-card" data-trainer-value="NataliaCoelho" data-trainer-display="Natalia Coelho (4.0/5)">
+      <div class="trainer-info-wrapper">
+        <img src="natalia.jpg.webp" alt="Natalia Coelho" class="trainer-photo">
+        <div class="trainer-details">
+          <h3>Natalia Coelho</h3>
+          <p class="description">Known for her energetic and motivational training sessions that help clients boost stamina and flexibility. She combines endurance workouts with mobility drills for a balanced and sustainable fitness approach.</p>
+          <div class="rating">
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star empty">★</span>
+          </div>
+        </div>
+        <button class="select-trainer-button">SELECT</button>
+      </div>
+    </div>
+
+    <div class="trainer-card" data-trainer-value="ArnoldSchwarzenegger" data-trainer-display="Arnold Schwarzenegger (5.0/5)">
+      <div class="trainer-info-wrapper">
+        <img src="arnold.jpg" alt="Arnold Schwarzenegger" class="trainer-photo">
+        <div class="trainer-details">
+          <h3>Arnold Schwarzenegger</h3>
+          <p class="description">focuses on personalized fitness programs tailored to each client’s goals — whether it’s weight loss, muscle gain, or overall wellness. His sessions emphasize discipline, goal tracking, and nutritional guidance.</p>
+          <div class="rating">
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+          </div>
+        </div>
+        <button class="select-trainer-button">SELECT</button>
+      </div>
+    </div>
+    
+    <div class="trainer-card" data-trainer-value="RonnieColeman" data-trainer-display="Ronnie Coleman (4.5/5)">
+      <div class="trainer-info-wrapper">
+        <img src="ronnie.jpg.webp" alt="Ronnie Coleman" class="trainer-photo">
+        <div class="trainer-details">
+          <h3>Ronnie Coleman</h3>
+          <p class="description">passionate trainer specializing in high-intensity interval training and cardiovascular endurance. His fast-paced, high-energy sessions are designed to burn fat and improve heart health efficiently.</p>
+          <div class="rating">
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star filled">★</span>
+            <span class="star half">★</span>
+            <span class="star empty">★</span>
+          </div>
+        </div>
+        <button class="select-trainer-button">SELECT</button>
+      </div>
+    </div>
+    
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'novisGymSelections';
+
+    // ADDED: Search Functionality
+    const searchInput = document.getElementById('trainerSearch');
+    const trainerCards = document.querySelectorAll('.trainer-card');
+
+    searchInput.addEventListener('keyup', function() {
+        const searchTerm = this.value.toLowerCase();
+
+        trainerCards.forEach(card => {
+            const name = card.querySelector('.trainer-details h3').textContent.toLowerCase();
+            const description = card.querySelector('.description').textContent.toLowerCase();
+            
+            if (name.includes(searchTerm) || description.includes(searchTerm)) {
+                card.style.display = ''; // Show the card
+            } else {
+                card.style.display = 'none'; // para ma hide yung card
+            }
+        });
+    });
+
+
+    document.querySelectorAll('.select-trainer-button').forEach(button => {
+      button.addEventListener('click', function() {
+        const card = button.closest('.trainer-card');
+        const trainerValue = card.getAttribute('data-trainer-value');
+        const trainerDisplay = card.getAttribute('data-trainer-display');
+        
+        
+        const storedData = localStorage.getItem(STORAGE_KEY);
+        const selections = storedData ? JSON.parse(storedData) : {};
+        
+        
+        selections.trainerValue = trainerValue;
+        selections.trainerDisplay = trainerDisplay;
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(selections));
+        
+        
+        window.location.href = "selection.html"; 
+      });
+    });
+  </script>
+</body>
+</html>

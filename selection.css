@@ -1,0 +1,254 @@
+body { 
+    font-family: sans-serif; 
+    color: #fff; 
+    text-align: center; 
+    padding: 0; 
+    margin: 0;
+    overflow-x: hidden; 
+}
+
+
+.selection-page-body {
+    background-image: url('./signbg.png.png'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    min-height: 100vh; 
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+
+.selection-page-body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to right, rgba(255, 0, 0, 0.4), rgba(0, 0, 255, 0.4)); 
+    z-index: 0;
+}
+
+
+
+.selection-page-container { 
+    max-width: 500px; 
+    width: 90%;
+    margin: auto; 
+    padding: 30px; 
+    border-radius: 10px; 
+    position: relative; 
+    z-index: 1;
+}
+
+.header-logo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 30px;
+    gap: 15px; 
+}
+
+.header-logo .logo {
+    width: 170px; 
+    height: auto;
+}
+
+.title { 
+    color: #fff; 
+    margin: 0; 
+    font-size: 32px; 
+    letter-spacing: 2px;
+}
+.highlight { 
+    color: #ffa500; 
+    font-weight: bold;
+}
+
+
+.form-group {
+    margin-bottom: 25px; 
+    text-align: left;
+}
+
+.form-label-style { 
+    display: block;
+    font-weight: bold;
+    font-size: 20px; 
+    color: #fff; 
+    margin-bottom: 10px;
+    text-decoration: underline; 
+    text-underline-offset: 8px; 
+    text-decoration-thickness: 2px; 
+    text-decoration-color: #ff0000; 
+    letter-spacing: 1px;
+}
+
+
+.selection-box {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    height: 50px; 
+    padding: 0 20px;
+    background-color: #ff4500; 
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 18px;
+    text-decoration: none; 
+    transition: background-color 0.2s;
+    box-sizing: border-box;
+}
+.selection-box:hover {
+    background-color: #e03f00; 
+}
+
+
+.date-input {
+    width: 100%;
+    height: 50px; 
+    padding: 0 20px;
+    background-color: #ff4500; 
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 18px;
+    box-sizing: border-box; 
+    text-align: left; 
+}
+
+.date-input::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.date-input::-webkit-calendar-picker-indicator {
+    filter: invert(1); 
+    cursor: pointer;
+}
+
+
+.proceed-btn {
+    display: block;
+    width: 100%; 
+    margin-top: 40px; 
+    padding: 18px; 
+    font-size: 22px; 
+    background-color: #ff0000; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    text-decoration: none; 
+    text-align: center;
+    transition: background-color 0.2s;
+    letter-spacing: 1px;
+    font-weight: bold;
+}
+.proceed-btn:hover { 
+    background-color: #cc0000; 
+}
+
+
+
+
+.packages-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+.package-card {
+    background-color: #8B0000; 
+    padding: 20px;
+    border-radius: 10px;
+    width: 250px;
+    box-shadow: 5px 5px 15px rgba(0,0,0,0.5);
+    text-align: left;
+}
+.package-card h2 { 
+    font-size: 24px; 
+    margin-top: 0; 
+}
+.price { 
+    font-size: 30px; 
+    font-weight: bold; 
+    color: #fff; 
+    margin: 10px 0; 
+}
+.price span { 
+    font-size: 18px; 
+    font-weight: normal; 
+}
+.package-card hr {
+    border: 0;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.2);
+    margin: 15px 0;
+}
+.feature { 
+    margin: 8px 0; 
+    font-size: 16px; 
+}
+.feature::before { 
+    content: "✓ "; 
+    color: #ffa500; 
+    font-weight: bold; 
+}
+.select-package-button {
+    display: block;
+    width: 100%;
+    padding: 10px;
+    margin-top: 20px;
+    background-color: #ffe4b5; 
+    color: #333;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.2s;
+}
+.select-package-button:hover { 
+    background-color: #e5cd94; 
+}
+
+
+
+.trainer-list { 
+    max-width: 400px; 
+    margin: 30px auto; 
+}
+.trainer-card {
+    background-color: #444;
+    padding: 15px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    text-align: left;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.trainer-card h3 { 
+    margin: 0; 
+    font-size: 20px; 
+}
+.select-trainer-button {
+    padding: 8px 15px;
+    background-color: #ff0000;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.2s;
+}
+.select-trainer-button:hover { 
+    background-color: #cc0000; 
+}
